@@ -11,16 +11,22 @@ var router *gin.Engine
 
 func main() {
 
-	router := gin.Default()
-	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	r := gin.Default()
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
-	router.LoadHTMLGlob("templates/*")
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+
+	r.LoadHTMLGlob("templates/*")
 
 	// Handle Index
-	router.GET("/", showIndexPage)
+	r.GET("/", showIndexPage)
 	// Handle GET requests at /article/view/some_article_id
-	router.GET("/article/view/:article_id", getArticle)
+	r.GET("/article/view/:article_id", getArticle)
 
-	router.Run()
+	r.Run()
 
 }
